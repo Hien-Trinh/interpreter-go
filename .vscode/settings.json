@@ -1,5 +1,0 @@
-{
-    "fzf-quick-open.ripgrepSearchStyle": "Smart case",
-    "fzf-quick-open.findDirectoriesCmd": "fd --type d",
-    "fzf-quick-open.initialWorkingDirectory": "pwd"
-}
