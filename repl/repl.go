@@ -79,6 +79,9 @@ func printParseError(out io.Writer, errors []string) {
 	}
 
 	for _, msg := range errors {
-		io.WriteString(out, "\t"+msg+"\n")
+		_, err = io.WriteString(out, "\t"+msg+"\n")
+		if err != nil {
+			return
+		}
 	}
 }
