@@ -7,6 +7,7 @@ import (
 
 	"github.com/Hien-Trinh/interpreter-go/evaluator"
 	"github.com/Hien-Trinh/interpreter-go/lexer"
+	"github.com/Hien-Trinh/interpreter-go/object"
 	"github.com/Hien-Trinh/interpreter-go/parser"
 )
 
@@ -27,6 +28,7 @@ const MONKEY_FACE = `
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 
 	for {
 		fmt.Print(PROMPT)
@@ -45,19 +47,41 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluated := evaluator.Eval(program)
+		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
-			io.WriteString(out, evaluated.Inspect())
-			io.WriteString(out, "\n")
+			_, err := io.WriteString(out, evaluated.Inspect())
+			if err != nil {
+				return
+			}
+
+			_, err = io.WriteString(out, "\n")
+			if err != nil {
+				return
+			}
 		}
 	}
 }
 
 func printParseError(out io.Writer, errors []string) {
-	io.WriteString(out, MONKEY_FACE)
-	io.WriteString(out, "Woops! We ran into some monkey business here!\n")
-	io.WriteString(out, " parser errors:\n")
+	_, err := io.WriteString(out, MONKEY_FACE)
+	if err != nil {
+		return
+	}
+
+	_, err = io.WriteString(out, "Woops! We ran into some monkey business here!\n")
+	if err != nil {
+		return
+	}
+
+	_, err = io.WriteString(out, " parser errors:\n")
+	if err != nil {
+		return
+	}
+
 	for _, msg := range errors {
-		io.WriteString(out, "\t"+msg+"\n")
+		_, err = io.WriteString(out, "\t"+msg+"\n")
+		if err != nil {
+			return
+		}
 	}
 }
